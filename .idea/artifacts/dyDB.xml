@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="dyDB">
+    <output-path>$PROJECT_DIR$/out/artifacts/dyDB</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="dyDB" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Struts 2-2.3.20.1" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="dyDB/web/Web" />
+    </root>
+  </artifact>
+</component>
