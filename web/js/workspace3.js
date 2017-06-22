@@ -1,40 +1,176 @@
-	$(document).ready(function(){
-		var screenWidth=document.body.clientWidth;
-		$(".main-hidden").hide();
-		$(".excel-main").width((screenWidth*0.8-220)*0.9);
-		$(".panel-filter-close").click(function(){
-			$(".main-hidden").hide();
-		});
-		$("#menu-button-filter").click(function(){
-			$(".main-hidden").show();
-		});
-		$(".table-info").click(function(){
-			$(".table-info-active").removeClass("table-info-active");
-			$(this).addClass("table-info-active");
-		});
-		$(".excel-cell").click(function(){
-			$(".excel-cell-active").addClass("excel-cell");
-			$(".excel-cell-active").removeClass("excel-cell-active");
-			$(this).addClass("excel-cell-active");
-		});
-		$(".excel-cell").dblclick(function(){
-				$(this).removeAttr("readonly");
-		});
-		$(".excel-cell").blur(function(){
-				$(this).attr("readonly","readonly");
-		});
-		$("input[type='checkbox']").click(function(){
-			if($(this).prop("checked")){
-				$(this).parent().addClass("excel-cell-0-active");
-				$(this).parent().parent().addClass("excel-line-active");
-			}
-			else{
-				$(this).parent().removeClass("excel-cell-0-active");
-				$(this).parent().parent().removeClass("excel-line-active");
-			}
-		});
-		$("#pick-index").blur(function(){
-			var value=$(this).val();
-			alert(!isNaN(value));
-		});
-	});
+/**
+ * Created by dell2 on 2017/6/10.
+ */
+var temp=new Array();
+var jsonTemps=new Array();
+var dbclickLine=new Array();
+var changeLine=new Array();
+$(document).ready(function(){
+    var screenWidth=document.body.clientWidth;
+    $(".main-hidden").hide();
+    $(".excel-extra-line").hide();
+    $(".excel-main").width((screenWidth*0.8-220)*0.9);
+    $(".panel-filter-close").click(function(){
+        $(".main-hidden").hide();
+    });
+    $("#menu-button-filter").click(function(){
+        $(".main-hidden").show();
+    });
+    $(".table-info").click(function(){
+        $(".table-info-active").removeClass("table-info-active");
+        $(this).addClass("table-info-active");
+    });
+    $(".excel-cell > input").click(function(){
+        $(".excel-cell-active").addClass("excel-cell");
+        $(".excel-cell-active").removeClass("excel-cell-active");
+        $(this).parent().addClass("excel-cell-active");
+    });
+    $(".excel-cell > input").dblclick(function(){
+        var stuID=$(this).parent().parent().attr("id");
+        deleteArray(dbclickLine,stuID);
+        console.log(stuID);
+        dbclickLine.push(stuID);
+        $(this).removeAttr("readonly");
+        $(this).focus();
+        $(this).css({"font-size":"15px"});
+    });
+    $(".excel-cell > input").blur(function(){
+        $(this).attr("readonly","readonly");
+        $(this).css({"font-size":"13px"});
+    });
+    $("input[type='checkbox']").click(function(){
+        if($(this).prop("checked")){
+            var stuID=$(this).parent().parent().attr("id");
+            changeLine.push(stuID);
+            $(this).parent().addClass("excel-cell-0-active");
+            $(this).parent().parent().addClass("excel-line-active");
+        }
+        else{
+            var stuID=$(this).parent().parent().attr("id");
+            deleteArray(changeLine,stuID);
+            $(this).parent().removeClass("excel-cell-0-active");
+            $(this).parent().parent().removeClass("excel-line-active");
+        }
+    });
+    $("#verify-change").click(function(){
+        getJsonTemps(dbclickLine,"change");
+    });
+    $("#delete-line").click(function(){
+        getJsonTemps(changeLine,"delete");
+    });
+    $(".panel-filter-button").click(function(){
+        var request_key="";
+        var request_value="";
+        $(".input-conditions-main").each(function(){
+            request_key+=$(this).val()+",";
+        })
+        $(".input-conditions-content").each(function(){
+            request_value+=$(this).val()+",";
+        })
+        if(request_key!=""&&request_value!=""){
+            window.location.href=("datableAction.action?request_key="+request_key+"&request_value="+request_value);
+        }
+    });
+    $("#table-button-back").click(function(){
+        window.location.href="index.action";
+    });
+    $("#table-button-display").click(function(){
+        window.open("displayShowAction");
+    })
+    function getJsonTemps(arr,kind){
+        var result="{\"student\":[";
+        while(jsonTemps.length>0){jsonTemps.pop();}
+        var i;
+        for(i=0;i<arr.length;i++){
+            getJsonTemp(arr[i]);
+        }
+        console.log(jsonTemps.length);
+        for(i=0;i<jsonTemps.length;i++){
+            if(i==0){
+                result+=jsonTemps[i];
+            }
+            else{
+                result+=","+jsonTemps[i];
+            }
+        }
+        result+="]}";
+        var JSON_result=JSON.parse(result);
+        var JSONStr_result=JSON.stringify(JSON_result);
+        console.log(JSONStr_result);
+        if(kind=="delete"){
+            $.ajax({
+                type : "post",//请求方式
+                url : "dbDeleteSql",
+                timeout : 800000,//超时时间：800秒
+                dataType : "json",//设置返回数据的格式
+                data : {"node":JSONStr_result},
+                success : function(data){
+                    document.location.reload();
+                },
+                error : function(){
+                    alert("failure");
+                }
+            });
+        }
+        else if(kind=="change"){
+            $.ajax({
+                type : "post",//请求方式
+                url : "dbChangeSql",
+                timeout : 800000,//超时时间：800秒
+                dataType : "json",//设置返回数据的格式
+                data : {"node":JSONStr_result},
+                success : function(data){
+                    document.location.reload();
+                },
+                error : function(){
+                    alert("failure");
+                }
+            });
+        }
+    }
+    function getJsonTemp(stuID){
+        var result="{\"stuID\":\""+stuID+"\"";
+        var stuEl=$("#"+stuID).children(".excel-cell-updata");
+        stuEl.each(function(){
+            var key=$(this).children(".hidden-info").html();
+            var value=$(this).children("input").val();
+            result+=",\""+key+"\":\""+value+"\"";
+        });
+        result+="}";
+        var result_JSON=JSON.parse(result);
+        console.log(result_JSON.stuID);
+        jsonTemps.push(result);
+    }
+});
+function deleteArray(arr,val){
+    while(temp.length>0){temp.pop();}
+    var index=0;
+    var i;
+    for(i=0;i<arr.length;i++){
+        if(arr[i]!=val){
+            temp[index]=arr[i];
+            index++;
+        }
+    }
+    while(arr.length>0){arr.pop();}
+    for(i=0;i<temp.length;i++){
+        arr.push(temp[i]);
+    }
+}
+function addConditionLine(){
+    var htmlSave=$(".panel-filter-content").html();
+    htmlSave="<div class=\"input-line\">"+
+        "<div class=\"input-list\">"+
+        "<input type=\"text\" class=\"input-list-item input-conditions-main\">"+
+        "<input type=\"text\" class=\"input-list-item\" value=\"=\" readonly>"+
+        "<input type=\"text\" class=\"input-list-item input-conditions-content\">"+
+        "</div>"+
+        "<div class=\"input-close\" onclick=\"closeConditionLine(this)\"></div>"+
+        "</div>"+htmlSave;
+    $(".panel-filter-content").html(htmlSave);
+}
+function closeConditionLine(current){
+    current.parentNode.style.cssText="display:none";
+    current.parentNode.children[0].children[0].value="";
+    current.parentNode.children[0].children[2].value="";
+}
