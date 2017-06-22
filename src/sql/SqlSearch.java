@@ -40,8 +40,6 @@ public class SqlSearch {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         return table;
     }
 }
