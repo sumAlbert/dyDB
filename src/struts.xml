@@ -10,7 +10,7 @@
     <action name="index" class="action.StartupAction">
         <result name="success">workspace3.jsp</result>
     </action>
-    <action name="search" class="sql.SqlSearch">
+    <action name="sql" class="sql.SqlSearch">
         <result name="success">workspace3.jsp</result>
     </action>
     </package>

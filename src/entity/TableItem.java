@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ public class TableItem {
     private Map<String,String> items;
     public TableItem(){
         super();
+        header=new ArrayList<>();
         items=new HashMap<>();
     }
     public List<String> getHeader(){
