@@ -1,4 +1,6 @@
-<%--
+<%@ page import="entity.Table" %>
+<%@ page import="entity.TableItem" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: dell2
   Date: 2017/6/22
@@ -6,6 +8,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    Table table= (Table) request.getAttribute("table");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -72,59 +77,51 @@
             <div class="excel-main">
                 <div class="excel-header">
                     <div class="excel-header-cell excel-header-cell-0" style="min-width: 30px;max-width: 30px"></div>
-                    <div class="excel-header-cell">
-                        123
-                    </div><!--
-					--><div class="excel-header-cell">
-                    123
-                </div><!--
-					--><div class="excel-header-cell">
-                    123
-                </div><!--
-					--><div class="excel-header-cell">
-                    123
-                </div><!--
-					--><div class="excel-header-cell">
-                    123
-                </div>
+                    <%
+                        List<TableItem> tableItemList=table.getTableItems();
+                        int header_size=tableItemList.get(0).getHeader().size();
+                        for(int i=0;i<header_size;i++)
+                        {
+                            TableItem tableItem=tableItemList.get(0);
+                    %>
+                        <div class="excel-header-cell">
+                            <%=tableItem.getHeader().get(i)%>
+                        </div>
+                    <%
+                        }
+                    %>
                 </div>
                 <div class="excel-content">
+                    <%
+                        int listNum=tableItemList.size();
+                        for(int i=0;i<listNum;i++)
+                        {
+                            if(i>=12)
+                                break;
+                            TableItem tableItem=tableItemList.get(i);
+                    %>
                     <div class="excel-line">
                         <div class="hidden-info">123456789</div>
                         <div class="excel-cell excel-cell-0" style="min-width: 30px;max-width: 30px">
                             <input type="checkbox" name="" id="test">
                         </div>
-                        <div class="excel-cell">
-                            <div class="hidden-info">attr</div>
-                            <input type="text" name="" readonly>
-                        </div><!--
-						--><div class="excel-cell">
-                        <div class="hidden-info">attr</div>
-                        <input type="text" name="" readonly>
-                    </div><!--
-						--><div class="excel-cell">
-                        <div class="hidden-info">attr</div>
-                        <input type="text" name="" readonly>
-                    </div><!--
-						--><div class="excel-cell">
-                        <div class="hidden-info">attr</div>
-                        <input type="text" name="" readonly>
+                        <%
+                            for(int j=0;j<tableItem.getHeader().size();j++){
+
+                                    String attr=tableItem.getHeader().get(j);
+                                    String value=(String)tableItem.getItems().get(attr);
+                        %>
+                            <div class="excel-cell">
+                                <div class="hidden-info"><%=attr%></div>
+                                <input type="text" name=""  value="<%=value%>" readonly>
+                            </div>
+                        <%
+                            }
+                        %>
                     </div>
-                    </div>
-                    <div class="excel-line">
-                        <div class="hidden-info">123456789</div>
-                        <div class="excel-cell excel-cell-0" style="min-width: 30px;max-width: 30px">
-                            <input type="checkbox" name="">
-                        </div>
-                        <div class="excel-cell">
-                            <div class="hidden-info">attr</div>
-                            <input type="text" name="" readonly>
-                        </div>
-                        <div class="excel-cell">
-                            <div class="hidden-info">attr</div>
-                            <input type="text" name="" readonly>
-                        </div>
-                    </div>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
         </div>
