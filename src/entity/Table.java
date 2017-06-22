@@ -11,7 +11,7 @@ public class Table {
     private List<TableItem> tableItems;
     public Table(){
         tableName="";
-        tableItems=new ArrayList<>();
+        tableItems=new ArrayList<TableItem>();
     }
     public String getTableName(){
         return tableName;

@@ -1,6 +1,9 @@
 package sql;
 
 import entity.Table;
+import entity.TableItem;
+
+import java.util.List;
 
 import static com.opensymphony.xwork2.Action.SUCCESS;
 
@@ -15,6 +18,14 @@ public class SqlSearch {
     }
     public Table search(String tableName){
         Table table=new Table();
+        table.setTableName(tableName);
+        List<TableItem>tables=table.getTableItems();
+        /*****
+
+
+
+         */
+
 
 
         return table;

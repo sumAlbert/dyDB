@@ -13,8 +13,8 @@ public class TableItem {
     private Map<String,String> items;
     public TableItem(){
         super();
-        header=new ArrayList<>();
-        items=new HashMap<>();
+        header=new ArrayList<String>();
+        items=new HashMap<String,String>();
     }
     public List<String> getHeader(){
         return header;
