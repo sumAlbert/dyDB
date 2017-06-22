@@ -10,8 +10,8 @@
   <head>
     <title></title>
   </head>
-  <%--<meta http-equiv="refresh" content="0;url=index.action">--%>
-  <meta http-equiv="refresh" content="0;url=sql.action">
+  <meta http-equiv="refresh" content="0;url=index.action">
+  <%--<meta http-equiv="refresh" content="0;url=sql.action">--%>
   <body>
   </body>
 </html>
