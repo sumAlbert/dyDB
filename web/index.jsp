@@ -8,9 +8,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>$Title$</title>
+    <title></title>
   </head>
+  <%--<meta http-equiv="refresh" content="0;url=index.action">--%>
+  <meta http-equiv="refresh" content="0;url=search.action">
   <body>
-  $END$
   </body>
 </html>
